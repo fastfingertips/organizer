@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from datetime import datetime
 
@@ -40,3 +41,16 @@ def organize_files_by_extension(folder_path):
             shutil.move(file_path, os.path.join(folder_path_ext, filename))
 
             log.write_log(f"{filename} moved to {folder_name} folder.")
+
+
+if __name__ == "__main__":
+    # Get folder path from command line argument
+    try:
+        method= sys.argv[1]
+        folder_path = sys.argv[2]
+        if method == "date": organize_files_by_date(folder_path)
+        elif method == "ext": organize_files_by_extension(folder_path)
+        else: print("Invalid method.")
+    except IndexError:
+        print(f"Usage: python {sys.argv[0]} <method> <folder_path>")
+        exit(1)
