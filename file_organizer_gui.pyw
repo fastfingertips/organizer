@@ -1,8 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog
-from datetime import datetime
-
-import file_organizer_log as log
 import file_organizer_logic as logic
 
 class FileOrganizerGUI:
@@ -10,12 +7,16 @@ class FileOrganizerGUI:
         self.master = master
         master.title("File Organizer")
 
-        self.background_color = "#131517"
-        self.foreground_color = "#731F00"
-        self.accent_color = self.background_color
-        self.active_color = "#000000"
+        design = {
+            'font': ("Arial", 12), # text_font
+            'bg': "#000000", # background_color
+            'fg': "#C0CACA", # text_color
+            'activebackground': "#181818", # active_background_color
+            'activeforeground': "#DAE6E6", # active_text_color
+        }
 
-        self.text_font = ("Arial", 12)
+        # Background
+        self.accent_color = "#731F00"
 
         self.window_width = 380
         self.window_height = 170
@@ -23,29 +24,56 @@ class FileOrganizerGUI:
         self.y_coordinate = int((master.winfo_screenheight() / 2) - (self.window_height / 2))
 
         master.geometry("{}x{}+{}+{}".format(self.window_width, self.window_height, self.x_coordinate, self.y_coordinate))
-        master.config(bg=self.background_color)
+        master.config(bg=design['bg'])
 
-        self.background_canvas = tk.Canvas(master, bg=self.foreground_color, highlightthickness=0)
+        self.background_canvas = tk.Canvas(master, bg=design['bg'], highlightthickness=0)
         self.background_canvas.place(relwidth=1, relheight=1)
 
         self.lines = []
-        self.lines.append(self.background_canvas.create_line(0, 0, 500, 300, fill=self.background_color))
-        self.lines.append(self.background_canvas.create_line(500, 0, 0, 300, fill=self.background_color))
+        self.lines.append(self.background_canvas.create_line(0, 0, 500, 300, fill=self.accent_color))
+        self.lines.append(self.background_canvas.create_line(500, 0, 0, 300, fill=self.accent_color))
         
         self.background_canvas.after(500, self.animate)
 
-        self.folder_label = tk.Label(master, text="Please select a folder", bg=self.background_color, fg=self.foreground_color, font=self.text_font)
-        self.select_button = tk.Button(master, text="Select Folder", bg=self.accent_color, fg=self.foreground_color, activebackground=self.active_color, activeforeground=self.foreground_color, font=self.text_font, command=self.select_folder)
-        self.organize_button = tk.Button(master, text="Organize", bg=self.accent_color, fg=self.foreground_color, activebackground=self.active_color, activeforeground=self.foreground_color, font=self.text_font, command=self.organize_files)
+        self.folder_label = tk.Label(
+            master,
+            text="Please select a folder",
+            **design
+            )
+        self.select_button = tk.Button(
+            master,
+            text="Select Folder",
+            command=self.select_folder,
+            **design
+            )
+        self.organize_button = tk.Button(
+            master,
+            text="Organize",
+            command=self.organize_files,
+            **design
+            )
 
         self.folder_label.pack(pady=10)
         self.select_button.pack()
         self.organize_button.pack(pady=10)
 
+        # Radio Buttons
         self.selection_var = tk.StringVar(value="Date")
-        self.selection_frame = tk.Frame(master, bg=self.background_color)
-        self.radio_button1 = tk.Radiobutton(self.selection_frame, text="Move by date", variable=self.selection_var, value="Date", bg=self.background_color, fg=self.foreground_color, activebackground=self.active_color, activeforeground=self.foreground_color, font=self.text_font)
-        self.radio_button2 = tk.Radiobutton(self.selection_frame, text="Move by extension", variable=self.selection_var, value="Extension", bg=self.background_color, fg=self.foreground_color, activebackground=self.active_color, activeforeground=self.foreground_color, font=self.text_font)
+        self.selection_frame = tk.Frame(master, bg=design['bg'])
+        self.radio_button1 = tk.Radiobutton(
+            self.selection_frame,
+            variable=self.selection_var,
+            text="Move by date",
+            value="Date",
+            **design
+            )
+        self.radio_button2 = tk.Radiobutton(
+            self.selection_frame,
+            variable=self.selection_var,
+            text="Move by extension",
+            value="Extension",
+            **design
+            )
 
         self.selection_frame.pack()
         self.radio_button1.pack(side="left")
@@ -71,7 +99,6 @@ class FileOrganizerGUI:
                 coords[0] = self.window_width - 10
                 coords[2] = 490
             self.background_canvas.coords(line, *coords)
-
 
     # Function to select folder
     def select_folder(self):
